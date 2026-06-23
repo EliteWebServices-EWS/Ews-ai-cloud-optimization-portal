@@ -1,0 +1,41 @@
+/* ==========================================================================
+   Elite Web Services — Brand Color Tokens
+   Source: extracted from official logo asset (ews-logo-master.png)
+   Owner: Florence — Day 1, Phase 1 backlog
+   ========================================================================== */
+
+:root {
+  /* --- Core brand colors --- */
+  --ews-black: #0A0A0A;        /* primary background / shield base */
+  --ews-black-pure: #000000;   /* true black, use sparingly (logo bg only) */
+  --ews-white: #FFFFFF;        /* primary text on dark backgrounds */
+  --ews-off-white: #F5F5F2;    /* soft white for large light backgrounds */
+
+  /* --- Gold / Yellow (signature accent) --- */
+  --ews-gold: #DBAC18;         /* primary gold — buttons, borders, icons */
+  --ews-gold-light: #F4C73E;   /* highlight gold — hover states, gradients */
+  --ews-gold-dark: #A8830F;    /* deep gold — shadows, pressed states */
+
+  /* --- Functional / supporting neutrals --- */
+  --ews-gray-900: #1A1A1A;     /* card backgrounds on dark theme */
+  --ews-gray-700: #3A3A3A;     /* borders, dividers on dark theme */
+  --ews-gray-300: #D4D4D4;     /* secondary text on dark theme */
+
+  /* --- Semantic aliases (use these in components) --- */
+  --color-bg-primary: var(--ews-black);
+  --color-bg-surface: var(--ews-gray-900);
+  --color-text-primary: var(--ews-white);
+  --color-text-secondary: var(--ews-gray-300);
+  --color-accent: var(--ews-gold);
+  --color-accent-hover: var(--ews-gold-light);
+  --color-accent-active: var(--ews-gold-dark);
+  --color-border: var(--ews-gray-700);
+}
+
+/* Quick usage reference:
+   Background:        background-color: var(--color-bg-primary);
+   Card / panel:       background-color: var(--color-bg-surface);
+   Heading / body text: color: var(--color-text-primary);
+   CTA button:          background: var(--color-accent); color: var(--ews-black);
+   CTA button hover:    background: var(--color-accent-hover);
+*/
