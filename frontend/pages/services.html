@@ -1,1 +1,800 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services — Elite Web Services</title>
+    <link rel="icon" href="../assets/logo/favicon.ico">
+    <link rel="stylesheet" href="../styles/brand-colors.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <style>
+        /* ── Services page overrides & extensions ── */
+
+        /* Hero */
+        .services-hero {
+            text-align: center;
+            padding: 5rem 2rem 4rem;
+            position: relative;
+        }
+        .services-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(219,172,24,0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero-eyebrow {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--ews-gold);
+            border: 1px solid rgba(219,172,24,0.3);
+            border-radius: 100px;
+            padding: 0.35rem 1rem;
+            margin-bottom: 1.75rem;
+        }
+        .services-hero h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            color: var(--ews-white);
+            line-height: 1.15;
+            letter-spacing: -1.5px;
+            max-width: 760px;
+            margin: 0 auto 1.25rem;
+        }
+        .services-hero h1 span {
+            background: linear-gradient(135deg, var(--ews-gold-light), var(--ews-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .services-hero p {
+            color: var(--ews-gray-300);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.7;
+        }
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--ews-gold);
+            color: var(--ews-black);
+            font-weight: 700;
+            font-size: 0.95rem;
+            padding: 0.85rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+        .hero-cta:hover {
+            background: var(--ews-gold-light);
+            transform: translateY(-2px);
+        }
+        .hero-cta svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Stats Strip */
+        .stats-strip {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 0;
+            border: 1px solid var(--ews-gray-700);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 5rem;
+        }
+        .stat-item {
+            padding: 1.75rem 2rem;
+            text-align: center;
+            background: var(--ews-gray-900);
+            border-right: 1px solid var(--ews-gray-700);
+            position: relative;
+        }
+        .stat-item:last-child { border-right: none; }
+        .stat-item::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--ews-gold-dark), var(--ews-gold-light));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .stat-item:hover::before { opacity: 1; }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--ews-gold);
+            letter-spacing: -1px;
+            line-height: 1;
+        }
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--ews-gray-300);
+            margin-top: 0.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        /* Section header */
+        .section-header {
+            margin-bottom: 2.5rem;
+        }
+        .section-eyebrow {
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--ews-gold);
+            margin-bottom: 0.6rem;
+        }
+        .section-header h2 {
+            font-size: clamp(1.5rem, 3vw, 2.25rem);
+            font-weight: 800;
+            color: var(--ews-white);
+            letter-spacing: -0.5px;
+        }
+        .section-header p {
+            color: var(--ews-gray-300);
+            margin-top: 0.6rem;
+            max-width: 560px;
+            line-height: 1.65;
+        }
+
+        /* Services Grid */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 5rem;
+        }
+        .service-card {
+            background: var(--ews-gray-900);
+            border: 1px solid var(--ews-gray-700);
+            border-radius: 14px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.25s ease, transform 0.25s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .service-card:hover {
+            border-color: rgba(219,172,24,0.4);
+            transform: translateY(-3px);
+        }
+        .service-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--ews-gold), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .service-card:hover::after { opacity: 1; }
+        .service-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            background: rgba(219,172,24,0.1);
+            border: 1px solid rgba(219,172,24,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.25rem;
+        }
+        .service-icon svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--ews-gold);
+            fill: none;
+            stroke-width: 1.75;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .service-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--ews-white);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.2px;
+        }
+        .service-card p {
+            font-size: 0.9rem;
+            color: var(--ews-gray-300);
+            line-height: 1.65;
+            flex: 1;
+        }
+        .service-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-top: 1.25rem;
+        }
+        .service-tag {
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            background: rgba(219,172,24,0.1);
+            color: var(--ews-gold);
+            border: 1px solid rgba(219,172,24,0.2);
+            letter-spacing: 0.04em;
+        }
+        .service-card .card-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            margin-top: 1.5rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--ews-gold);
+            text-decoration: none;
+            transition: gap 0.2s ease, color 0.2s ease;
+        }
+        .service-card .card-link:hover {
+            color: var(--ews-gold-light);
+            gap: 0.6rem;
+        }
+        .service-card .card-link svg {
+            width: 14px;
+            height: 14px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        /* Featured service (larger card) */
+        .service-card.featured {
+            border-color: rgba(219,172,24,0.3);
+            background: linear-gradient(135deg, rgba(219,172,24,0.06), var(--ews-gray-900));
+        }
+        .service-card.featured .service-icon {
+            background: rgba(219,172,24,0.18);
+            border-color: rgba(219,172,24,0.35);
+        }
+        .featured-badge {
+            position: absolute;
+            top: 1.25rem;
+            right: 1.25rem;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            background: var(--ews-gold);
+            color: var(--ews-black);
+            padding: 0.2rem 0.55rem;
+            border-radius: 4px;
+        }
+
+        /* Compliance Section */
+        .compliance-section {
+            background: var(--ews-gray-900);
+            border: 1px solid var(--ews-gray-700);
+            border-radius: 16px;
+            padding: 3rem;
+            margin-bottom: 5rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+        @media (max-width: 700px) {
+            .compliance-section { grid-template-columns: 1fr; gap: 2rem; }
+        }
+        .compliance-badges {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+        .compliance-badge {
+            background: var(--ews-black);
+            border: 1px solid var(--ews-gray-700);
+            border-radius: 10px;
+            padding: 1.25rem 0.75rem;
+            text-align: center;
+            transition: border-color 0.25s;
+        }
+        .compliance-badge:hover {
+            border-color: rgba(219,172,24,0.4);
+        }
+        .compliance-badge .badge-icon {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+        .compliance-badge .badge-name {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--ews-white);
+        }
+        .compliance-badge .badge-desc {
+            font-size: 0.68rem;
+            color: var(--ews-gray-300);
+            margin-top: 0.2rem;
+        }
+
+        /* Engagement Models */
+        .engagement-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 5rem;
+        }
+        .engagement-card {
+            border: 1px solid var(--ews-gray-700);
+            border-radius: 12px;
+            padding: 1.75rem;
+            background: var(--ews-gray-900);
+            position: relative;
+        }
+        .engagement-card.highlight {
+            border-color: rgba(219,172,24,0.4);
+            background: linear-gradient(135deg, rgba(219,172,24,0.05), var(--ews-gray-900));
+        }
+        .engagement-card h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--ews-white);
+            margin-bottom: 0.5rem;
+        }
+        .engagement-card .price {
+            font-size: 0.8rem;
+            color: var(--ews-gold);
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+        .engagement-card ul {
+            list-style: none;
+            padding: 0;
+        }
+        .engagement-card ul li {
+            font-size: 0.85rem;
+            color: var(--ews-gray-300);
+            padding: 0.3rem 0;
+            padding-left: 1.25rem;
+            position: relative;
+            line-height: 1.5;
+        }
+        .engagement-card ul li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--ews-gold);
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+        .popular-tag {
+            position: absolute;
+            top: -1px;
+            right: 1.25rem;
+            background: var(--ews-gold);
+            color: var(--ews-black);
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 0.2rem 0.6rem;
+            border-radius: 0 0 6px 6px;
+        }
+
+        /* CTA Banner */
+        .cta-banner {
+            background: linear-gradient(135deg, rgba(219,172,24,0.12), rgba(219,172,24,0.04));
+            border: 1px solid rgba(219,172,24,0.25);
+            border-radius: 16px;
+            padding: 3.5rem 3rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .cta-banner::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 60% 80% at 50% 100%, rgba(219,172,24,0.08), transparent);
+            pointer-events: none;
+        }
+        .cta-banner h2 {
+            font-size: clamp(1.5rem, 3.5vw, 2.25rem);
+            font-weight: 800;
+            color: var(--ews-white);
+            letter-spacing: -0.5px;
+            margin-bottom: 0.75rem;
+        }
+        .cta-banner p {
+            color: var(--ews-gray-300);
+            font-size: 1rem;
+            max-width: 520px;
+            margin: 0 auto 2rem;
+            line-height: 1.65;
+        }
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--ews-gold);
+            color: var(--ews-black);
+            font-weight: 700;
+            font-size: 0.9rem;
+            padding: 0.85rem 1.75rem;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background 0.2s, transform 0.2s;
+        }
+        .btn-primary:hover {
+            background: var(--ews-gold-light);
+            transform: translateY(-2px);
+        }
+        .btn-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: transparent;
+            color: var(--ews-white);
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 0.85rem 1.75rem;
+            border-radius: 8px;
+            text-decoration: none;
+            border: 1px solid var(--ews-gray-700);
+            transition: border-color 0.2s, transform 0.2s;
+        }
+        .btn-outline:hover {
+            border-color: var(--ews-gold);
+            transform: translateY(-2px);
+        }
+
+        /* Divider */
+        .section-divider {
+            border: none;
+            border-top: 1px solid var(--ews-gray-700);
+            margin: 0 0 5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .compliance-badges { grid-template-columns: repeat(2, 1fr); }
+            .stats-strip { grid-template-columns: repeat(2, 1fr); }
+            .stat-item:nth-child(2) { border-right: none; }
+            .stat-item { border-bottom: 1px solid var(--ews-gray-700); }
+            .stat-item:last-child { border-bottom: none; }
+            .cta-banner { padding: 2.5rem 1.5rem; }
+            .compliance-section { padding: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <div class="logo">
+                <img src="../assets/logo/ews-logo-64.png" alt="EWS" height="32" style="vertical-align:middle; margin-right:0.5rem;">
+                EWS Portal
+            </div>
+            <ul>
+                <li><a href="../index.html">Dashboard</a></li>
+                <li><a href="services.html" class="active">Services</a></li>
+                <li><a href="assessment.html">AWS Assessment</a></li>
+                <li><a href="security.html">Security & Trust</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+
+        <!-- ── Hero ── -->
+        <section class="services-hero">
+            <span class="hero-eyebrow">AWS Premier Consulting</span>
+            <h1>Cloud expertise that moves <span>your business forward</span></h1>
+            <p>From first migration to full FinOps maturity — Elite Web Services delivers certified AWS solutions tailored to your goals, timeline, and budget.</p>
+            <a href="contact.html" class="hero-cta">
+                Book a Free Assessment
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 8h10M9 4l4 4-4 4"/>
+                </svg>
+            </a>
+        </section>
+
+        <!-- ── Stats Strip ── -->
+        <div class="stats-strip">
+            <div class="stat-item">
+                <div class="stat-number">25+</div>
+                <div class="stat-label">Projects Delivered</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">5+</div>
+                <div class="stat-label">AWS Designations</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">80%</div>
+                <div class="stat-label">Client Retention</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">$500K+</div>
+                <div class="stat-label">Revenue Target</div>
+            </div>
+        </div>
+
+        <!-- ── Core Services ── -->
+        <div class="section-header">
+            <div class="section-eyebrow">Core Capabilities</div>
+            <h2>Our Services</h2>
+            <p>Five powerful capabilities to optimize your cloud, reduce costs, and maintain security and compliance.</p>
+        </div>
+
+        <div class="services-grid">
+
+            <!-- Cost Optimization -->
+            <div class="service-card featured">
+                <span class="featured-badge">Most Popular</span>
+                <div class="service-icon">
+                    <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                </div>
+                <h3>Cost Optimization</h3>
+                <div style="margin-bottom: 0.75rem;">
+                    <strong style="color: var(--ews-gold); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.06em;">What It Does</strong>
+                    <p style="margin: 0.4rem 0 0; font-size: 0.9rem; color: var(--ews-gray-300); line-height: 1.65;">Identify and eliminate unnecessary cloud spending through continuous analysis, rightsizing recommendations, and waste elimination. We analyze your infrastructure to find opportunities for immediate savings.</p>
+                </div>
+                <div>
+                    <strong style="color: var(--ews-gold); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.06em;">Business Outcome</strong>
+                    <p style="margin: 0.4rem 0 0; font-size: 0.9rem; color: var(--ews-gold); line-height: 1.65; font-weight: 600;">Reduce cloud costs by 20–40% while maintaining or improving performance and reliability.</p>
+                </div>
+                <div class="service-tags" style="margin-top: 1.25rem;">
+                    <span class="service-tag">Rightsizing</span>
+                    <span class="service-tag">Waste Elimination</span>
+                    <span class="service-tag">Budget Control</span>
+                </div>
+                <a href="contact.html" class="card-link">
+                    Learn More
+                    <svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+                </a>
+            </div>
+
+            <!-- FinOps Reporting -->
+            <div class="service-card">
+                <div class="service-icon">
+                    <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                </div>
+                <h3>FinOps Reporting</h3>
+                <div style="margin-bottom: 0.75rem;">
+                    <strong style="color: var(--ews-gold); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.06em;">What It Does</strong>
+                    <p style="margin: 0.4rem 0 0; font-size: 0.9rem; color: var(--ews-gray-300); line-height: 1.65;">Detailed cloud cost analytics, forecasting, and trend analysis. Real-time dashboards show spending patterns across teams, projects, and cost centers with predictive budgeting models.</p>
+                </div>
+                <div>
+                    <strong style="color: var(--ews-gold); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.06em;">Business Outcome</strong>
+                    <p style="margin: 0.4rem 0 0; font-size: 0.9rem; color: var(--ews-gold); line-height: 1.65; font-weight: 600;">Gain full visibility into cloud spending and make data-driven decisions on resource allocation and investment.</p>
+                </div>
+                <div class="service-tags" style="margin-top: 1.25rem;">
+                    <span class="service-tag">Analytics</span>
+                    <span class="service-tag">Forecasting</span>
+                    <span class="service-tag">Dashboards</span>
+                </div>
+                <a href="contact.html" class="card-link">
+                    Learn More
+                    <svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+                </a>
+            </div>
+
+            <!-- Security Visibility -->
+            <div class="service-card">
+                <div class="service-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <h3>Security Visibility</h3>
+                <div style="margin-bottom: 0.75rem;">
+                    <strong style="color: var(--ews-gold); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.06em;">What It Does</strong>
+                    <p style="margin: 0.4rem 0 0; font-size: 0.9rem; color: var(--ews-gray-300); line-height: 1.65;">Monitor and audit your security posture across cloud infrastructure. Identify misconfigurations, unencrypted data, overly permissive access, and compliance gaps in real time.</p>
+                </div>
+                <div>
+                    <strong style="color: var(--ews-gold); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.06em;">Business Outcome</strong>
+                    <p style="margin: 0.4rem 0 0; font-size: 0.9rem; color: var(--ews-gold); line-height: 1.65; font-weight: 600;">Detect vulnerabilities and compliance issues before they become security incidents or regulatory violations.</p>
+                </div>
+                <div class="service-tags" style="margin-top: 1.25rem;">
+                    <span class="service-tag">Monitoring</span>
+                    <span class="service-tag">Compliance</span>
+                    <span class="service-tag">Threat Detection</span>
+                </div>
+                <a href="security.html" class="card-link">
+                    Learn More
+                    <svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+                </a>
+            </div>
+
+            <!-- Governance & Automation -->
+            <div class="service-card">
+                <div class="service-icon">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/><path d="M12 5v2m0 10v2M19 12h-2M7 12H5"/></svg>
+                </div>
+                <h3>Governance & Automation</h3>
+                <div style="margin-bottom: 0.75rem;">
+                    <strong style="color: var(--ews-gold); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.06em;">What It Does</strong>
+                    <p style="margin: 0.4rem 0 0; font-size: 0.9rem; color: var(--ews-gray-300); line-height: 1.65;">Enforce consistent policies and automate compliance controls across your cloud environment. Prevent policy violations at resource creation, not after.</p>
+                </div>
+                <div>
+                    <strong style="color: var(--ews-gold); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.06em;">Business Outcome</strong>
+                    <p style="margin: 0.4rem 0 0; font-size: 0.9rem; color: var(--ews-gold); line-height: 1.65; font-weight: 600;">Reduce manual security and compliance overhead while ensuring consistent standards across all cloud resources.</p>
+                </div>
+                <div class="service-tags" style="margin-top: 1.25rem;">
+                    <span class="service-tag">Policy Enforcement</span>
+                    <span class="service-tag">Automation</span>
+                    <span class="service-tag">Compliance</span>
+                </div>
+                <a href="contact.html" class="card-link">
+                    Learn More
+                    <svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+                </a>
+            </div>
+
+            <!-- EWS-Lite Access -->
+            <div class="service-card">
+                <div class="service-icon">
+                    <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </div>
+                <h3>EWS‑Lite Access</h3>
+                <div style="margin-bottom: 0.75rem;">
+                    <strong style="color: var(--ews-gold); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.06em;">What It Does</strong>
+                    <p style="margin: 0.4rem 0 0; font-size: 0.9rem; color: var(--ews-gray-300); line-height: 1.65;">Lightweight dashboard and reporting portal for stakeholders. Finance, engineering, and leadership teams get self-service access to cost data, security metrics, and governance status without granting direct AWS access.</p>
+                </div>
+                <div>
+                    <strong style="color: var(--ews-gold); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.06em;">Business Outcome</strong>
+                    <p style="margin: 0.4rem 0 0; font-size: 0.9rem; color: var(--ews-gold); line-height: 1.65; font-weight: 600;">Enable self-service visibility and reporting while maintaining security and reducing support requests.</p>
+                </div>
+                <div class="service-tags" style="margin-top: 1.25rem;">
+                    <span class="service-tag">Self-Service</span>
+                    <span class="service-tag">Reporting</span>
+                    <span class="service-tag">Access Control</span>
+                </div>
+                <a href="contact.html" class="card-link">
+                    Learn More
+                    <svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+                </a>
+            </div>
+
+        </div>
+
+        <hr class="section-divider">
+
+        <!-- ── Compliance ── -->
+        <div class="section-header">
+            <div class="section-eyebrow">Regulatory Coverage</div>
+            <h2>Built-in compliance from day one</h2>
+            <p>We don't bolt compliance on at the end. Every architecture we design embeds the controls your industry demands.</p>
+        </div>
+
+        <div class="compliance-section">
+            <div>
+                <p style="color: var(--ews-gray-300); line-height:1.7; margin-bottom:1rem;">
+                    Our certified architects have deep experience implementing controls for HIPAA-covered healthcare entities, SOC 2 Type II audits, PCI-DSS payment environments, and government/education workloads under FedRAMP-aligned baselines.
+                </p>
+                <p style="color: var(--ews-gray-300); line-height:1.7;">
+                    Compliance isn't a deliverable at the end of a project — it's a guardrail in the first Terraform module. We use AWS Config Rules, Security Hub, and CloudTrail to maintain a continuous compliance posture your auditors can verify at any time.
+                </p>
+            </div>
+            <div class="compliance-badges">
+                <div class="compliance-badge">
+                    <div class="badge-icon">🏥</div>
+                    <div class="badge-name">HIPAA</div>
+                    <div class="badge-desc">Healthcare</div>
+                </div>
+                <div class="compliance-badge">
+                    <div class="badge-icon">🔒</div>
+                    <div class="badge-name">SOC 2</div>
+                    <div class="badge-desc">Type II Ready</div>
+                </div>
+                <div class="compliance-badge">
+                    <div class="badge-icon">💳</div>
+                    <div class="badge-name">PCI-DSS</div>
+                    <div class="badge-desc">Payments</div>
+                </div>
+                <div class="compliance-badge">
+                    <div class="badge-icon">🏛️</div>
+                    <div class="badge-name">FedRAMP</div>
+                    <div class="badge-desc">Gov Aligned</div>
+                </div>
+                <div class="compliance-badge">
+                    <div class="badge-icon">🌍</div>
+                    <div class="badge-name">GDPR</div>
+                    <div class="badge-desc">Data Privacy</div>
+                </div>
+                <div class="compliance-badge">
+                    <div class="badge-icon">☁️</div>
+                    <div class="badge-name">AWS Well-Arch</div>
+                    <div class="badge-desc">6 Pillars</div>
+                </div>
+            </div>
+        </div>
+
+        <hr class="section-divider">
+
+        <!-- ── Engagement Models ── -->
+        <div class="section-header">
+            <div class="section-eyebrow">How We Engage</div>
+            <h2>Flexible models for every stage</h2>
+            <p>Whether you need a one-time audit or an ongoing cloud operations partner, we have a structure that fits.</p>
+        </div>
+
+        <div class="engagement-grid">
+            <div class="engagement-card">
+                <h3>Project-Based</h3>
+                <div class="price">Fixed scope · Fixed budget</div>
+                <ul>
+                    <li>Defined deliverables & milestones</li>
+                    <li>Dedicated project architect</li>
+                    <li>Weekly progress reporting</li>
+                    <li>Post-delivery knowledge transfer</li>
+                </ul>
+            </div>
+            <div class="engagement-card highlight">
+                <span class="popular-tag">Most Popular</span>
+                <h3>Managed Services</h3>
+                <div class="price">Monthly subscription · SLA-backed</div>
+                <ul>
+                    <li>24/7 infrastructure monitoring</li>
+                    <li>Proactive incident response</li>
+                    <li>Monthly FinOps reports</li>
+                    <li>Quarterly architecture reviews</li>
+                    <li>Dedicated Slack channel & CSM</li>
+                </ul>
+            </div>
+            <div class="engagement-card">
+                <h3>Strategic Retainer</h3>
+                <div class="price">Hourly bank · High-growth clients</div>
+                <ul>
+                    <li>On-demand access to senior architects</li>
+                    <li>Priority response SLA</li>
+                    <li>Architecture advisory & code review</li>
+                    <li>Board-level cloud briefings</li>
+                </ul>
+            </div>
+            <div class="engagement-card">
+                <h3>AWS Marketplace</h3>
+                <div class="price">Co-sell · APN listings</div>
+                <ul>
+                    <li>Procure via AWS Marketplace</li>
+                    <li>Consolidated billing to your AWS account</li>
+                    <li>APN co-sell engagement</li>
+                    <li>Access to AWS funding programs</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ── CTA Banner ── -->
+        <div class="cta-banner">
+            <h2>Ready to optimise your AWS environment?</h2>
+            <p>Book a free 30-minute discovery call with one of our certified cloud architects. No commitment, no jargon — just clarity.</p>
+            <div class="cta-buttons">
+                <a href="contact.html" class="btn-primary">
+                    Book a Free Discovery Call
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+                        <path d="M3 8h10M9 4l4 4-4 4"/>
+                    </svg>
+                </a>
+                <a href="assessment.html" class="btn-outline">
+                    Run an AWS Assessment
+                </a>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Elite Web Services. All rights reserved. &nbsp;·&nbsp; <a href="security.html">Security & Trust Protocols</a></p>
+    </footer>
+
+    <script src="../js/app.js"></script>
+</body>
+</html>
