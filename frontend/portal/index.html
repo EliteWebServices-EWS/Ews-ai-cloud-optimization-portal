@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EWS AI Cloud Optimization Portal ù Demo</title>
+    <link rel="icon" href="../assets/logo/ews-logo-primary.png">
+    <link rel="stylesheet" href="../styles/brand-colors.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: var(--ews-black-soft, #0A0A0A);
+            color: var(--ews-white, #fff);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+        .portal-header {
+            background: #000;
+            border-bottom: 1px solid var(--ews-gray-700, #2A2A2A);
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+        }
+        .portal-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: inherit;
+        }
+        .portal-brand img { width: 36px; height: 36px; border-radius: 6px; }
+        .portal-brand span { font-weight: 700; font-size: 0.95rem; letter-spacing: -0.01em; }
+        .portal-badge {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--ews-gold, #FF9100);
+            border: 1px solid rgba(255,145,0,0.3);
+            padding: 0.25rem 0.6rem;
+            border-radius: 4px;
+            margin-left: 0.5rem;
+        }
+        .portal-header-actions { display: flex; align-items: center; gap: 1rem; }
+        .portal-header-actions a {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--ews-gray-300, #A3A3A3);
+            text-decoration: none;
+        }
+        .portal-header-actions a:hover { color: var(--ews-gold, #FF9100); }
+        .portal-logout {
+            background: var(--ews-surface-raised, #1A1A1A);
+            border: 1px solid var(--ews-gray-700, #2A2A2A);
+            color: var(--ews-white, #fff);
+            font-size: 0.75rem;
+            padding: 0.45rem 0.9rem;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .portal-layout { display: flex; flex: 1; overflow: hidden; }
+        .portal-sidebar {
+            width: 220px;
+            background: #000;
+            border-right: 1px solid var(--ews-gray-700, #2A2A2A);
+            padding: 1rem;
+            display: none;
+        }
+        @media (min-width: 768px) { .portal-sidebar { display: block; } }
+        .portal-sidebar a {
+            display: block;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--ews-gray-300, #A3A3A3);
+            text-decoration: none;
+            margin-bottom: 0.35rem;
+        }
+        .portal-sidebar a.active,
+        .portal-sidebar a:hover {
+            background: var(--ews-surface-raised, #1A1A1A);
+            color: var(--ews-gold, #FF9100);
+        }
+        .portal-main {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem 1.5rem;
+        }
+        .portal-main-inner { max-width: 1100px; margin: 0 auto; }
+        .portal-main h2 { font-size: 1.75rem; font-weight: 800; margin-bottom: 0.25rem; }
+        .portal-main .subtitle { color: var(--ews-gray-300, #A3A3A3); font-size: 0.85rem; margin-bottom: 2rem; }
+        .portal-section-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ews-gray-300, #A3A3A3);
+            margin: 2rem 0 1rem;
+        }
+        .portal-section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--ews-gray-700, #2A2A2A);
+        }
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+        .metric-card {
+            background: var(--ews-surface-raised, #1A1A1A);
+            border: 1px solid var(--ews-gray-700, #2A2A2A);
+            border-radius: 12px;
+            padding: 1.25rem;
+            border-left: 3px solid var(--ews-gold, #FF9100);
+        }
+        .metric-card h4 {
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--ews-gray-300, #A3A3A3);
+            margin-bottom: 0.5rem;
+        }
+        .metric-card .value { font-size: 1.75rem; font-weight: 800; color: var(--ews-white, #fff); }
+        .metric-card .note { font-size: 0.72rem; color: var(--ews-gold, #FF9100); margin-top: 0.5rem; }
+        .alert-list {
+            background: var(--ews-surface-raised, #1A1A1A);
+            border: 1px solid var(--ews-gray-700, #2A2A2A);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .alert-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.85rem 1rem;
+            border-bottom: 1px solid var(--ews-gray-700, #2A2A2A);
+            font-size: 0.85rem;
+        }
+        .alert-row:last-child { border-bottom: none; }
+        .alert-critical { color: #FF453A; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; }
+        .alert-warning { color: var(--ews-gold, #FF9100); font-size: 0.68rem; font-weight: 700; text-transform: uppercase; }
+        .demo-note {
+            text-align: center;
+            font-size: 0.72rem;
+            color: var(--ews-gray-500, #6B6B6B);
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="portal-header">
+        <a href="../index.html" class="portal-brand">
+            <img src="../assets/logo/ews-logo-primary.png" alt="EWS">
+            <span>Elite Web Services</span>
+            <span class="portal-badge">Portal Demo</span>
+        </a>
+        <div class="portal-header-actions">
+            <a href="../index.html">&larr; Back to Site</a>
+            <button class="portal-logout" type="button">Logout</button>
+        </div>
+    </header>
+
+    <div class="portal-layout">
+        <aside class="portal-sidebar">
+            <a href="#overview" class="active">Overview</a>
+            <a href="#cost">Cost Analysis</a>
+            <a href="#security">Security Alerts</a>
+            <a href="#resources">Core Resources</a>
+        </aside>
+
+        <main class="portal-main">
+            <div class="portal-main-inner">
+                <div id="overview">
+                    <h2>Cloud Architecture Overview</h2>
+                    <p class="subtitle">Mock AWS analytics ù Phase 1 demo with sample data</p>
+                </div>
+
+                <div class="portal-section-label" id="cost">Cost</div>
+                <div class="metric-grid">
+                    <div class="metric-card">
+                        <h4>Monthly Spend</h4>
+                        <div class="value">$1,240.50</div>
+                        <div class="note">&darr; 4.2% vs last month</div>
+                    </div>
+                    <div class="metric-card">
+                        <h4>Forecasted Spend</h4>
+                        <div class="value">$1,310.00</div>
+                        <div class="note">Next billing cycle</div>
+                    </div>
+                    <div class="metric-card">
+                        <h4>Est. Savings</h4>
+                        <div class="value">$210</div>
+                        <div class="note">From idle resources</div>
+                    </div>
+                </div>
+
+                <div class="portal-section-label" id="security">Security / Health Score</div>
+                <div class="metric-grid" style="margin-bottom:1rem;">
+                    <div class="metric-card">
+                        <h4>Open Alerts</h4>
+                        <div class="value">3</div>
+                        <div class="note">Attention required</div>
+                    </div>
+                    <div class="metric-card" style="grid-column: span 2;">
+                        <h4>Health Score</h4>
+                        <div class="value">82 / 100</div>
+                        <div class="note">Well-Architected alignment ù demo metric</div>
+                    </div>
+                </div>
+                <div class="alert-list">
+                    <div class="alert-row"><span>S3 bucket open to public read</span><span class="alert-critical">Critical</span></div>
+                    <div class="alert-row"><span>IAM key unused for 90+ days</span><span class="alert-warning">Warning</span></div>
+                    <div class="alert-row"><span>Security group review recommended</span><span class="alert-warning">Info</span></div>
+                </div>
+
+                <div class="portal-section-label" id="resources">Resources</div>
+                <div class="metric-grid">
+                    <div class="metric-card">
+                        <h4>Active EC2 Instances</h4>
+                        <div class="value">14</div>
+                    </div>
+                    <div class="metric-card">
+                        <h4>Storage (S3)</h4>
+                        <div class="value">3.2 TB</div>
+                    </div>
+                    <div class="metric-card">
+                        <h4>Uptime</h4>
+                        <div class="value">99.95%</div>
+                        <div class="note">Last 30 days</div>
+                    </div>
+                </div>
+
+                <p class="demo-note">Sample data only &mdash; refreshes from mock snapshot in Phase 1 MVP</p>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

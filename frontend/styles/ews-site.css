@@ -1,0 +1,486 @@
+/* ==========================================================================
+   EWS Site ù unified header, footer, hero, and layout
+   Colors sourced from brand-colors.css (logo palette)
+   ========================================================================== */
+
+:root {
+    --ews-bg: var(--ews-black-soft, #0A0A0A);
+    --ews-surface: var(--ews-surface-raised, #1A1A1A);
+    --ews-border: var(--ews-gray-700, #2A2A2A);
+    --ews-gold: var(--color-accent, #FF9100);
+    --ews-gold-light: var(--color-accent-hover, #FFAA33);
+    --ews-text: var(--color-text-primary, #FFFFFF);
+    --ews-muted: var(--color-text-secondary, #A3A3A3);
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+*,
+body {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    background-color: var(--ews-bg);
+    color: var(--ews-text);
+    line-height: 1.6;
+}
+
+/* --- Unified site header --- */
+.ews-site-header {
+    background-color: var(--ews-black, #000000);
+    border-bottom: 1px solid var(--ews-border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.ews-header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.ews-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+.ews-brand-logo {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.ews-brand-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.ews-brand-name {
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--ews-text);
+    line-height: 1.2;
+}
+
+.ews-brand-tagline {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--ews-gold);
+    margin-top: 0.1rem;
+}
+
+.ews-nav {
+    display: none;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.ews-nav-link {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--ews-muted);
+    text-decoration: none;
+    padding-bottom: 0.15rem;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.ews-nav-link:hover { color: var(--ews-text); }
+
+.ews-nav-link.active {
+    color: var(--ews-text);
+    border-bottom-color: var(--ews-gold);
+}
+
+.ews-nav-cta {
+    display: none;
+    background: var(--ews-gold);
+    color: var(--ews-black, #000);
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 0.55rem 1rem;
+    border-radius: 8px;
+    transition: background 0.2s;
+    flex-shrink: 0;
+}
+
+.ews-nav-cta:hover { background: var(--ews-gold-light); }
+
+.ews-nav-toggle {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    margin-left: auto;
+}
+
+.ews-nav-toggle span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--ews-text);
+    border-radius: 2px;
+}
+
+@media (min-width: 1024px) {
+    .ews-nav { display: flex; }
+    .ews-nav-cta { display: inline-block; }
+    .ews-nav-toggle { display: none; }
+}
+
+@media (max-width: 1023px) {
+    .ews-nav {
+        display: none;
+        position: absolute;
+        top: 72px;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        background: var(--ews-black, #000);
+        border-bottom: 1px solid var(--ews-border);
+        padding: 1rem 1.5rem 1.5rem;
+    }
+    .ews-nav.open { display: flex; }
+    .ews-nav-link {
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--ews-border);
+    }
+    .ews-nav-cta {
+        display: block;
+        text-align: center;
+        margin-top: 0.5rem;
+    }
+}
+
+/* --- Footer --- */
+.ews-site-footer {
+    background-color: var(--ews-black, #000);
+    border-top: 1px solid var(--ews-border);
+    padding: 2rem 1.5rem;
+    text-align: center;
+}
+
+.ews-footer-inner { max-width: 1200px; margin: 0 auto; }
+
+.ews-footer-copy,
+.ews-footer-meta {
+    font-size: 0.85rem;
+    color: var(--ews-muted);
+    margin-bottom: 0.4rem;
+}
+
+.ews-footer-meta a {
+    color: var(--ews-gold);
+    text-decoration: none;
+}
+
+.ews-footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.25rem;
+    margin-top: 0.5rem;
+}
+
+.ews-footer-links a {
+    font-size: 0.85rem;
+    color: var(--ews-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.ews-footer-links a:hover { color: var(--ews-text); }
+
+/* --- Homepage hero (subtle background, text-first) --- */
+.ews-hero {
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--ews-border);
+    background-color: var(--ews-black-soft, #0A0A0A);
+}
+
+.ews-hero-bg {
+    position: absolute;
+    inset: 0;
+    background-image: url('../assets/images/hero-gold-circuit.png');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.14;
+}
+
+.ews-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, rgba(10, 10, 10, 0.95) 100%);
+}
+
+.ews-hero-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 4.5rem 1.5rem 3rem;
+    text-align: center;
+}
+
+.ews-hero-eyebrow {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ews-gold);
+    background: rgba(255, 145, 0, 0.08);
+    border: 1px solid rgba(255, 145, 0, 0.22);
+    padding: 0.35rem 0.85rem;
+    border-radius: 4px;
+    margin-bottom: 1.25rem;
+}
+
+.ews-hero h1 {
+    font-size: clamp(2.25rem, 5vw, 3.75rem);
+    font-weight: 800;
+    color: var(--ews-text);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    margin-bottom: 1rem;
+}
+
+.ews-hero h1 span { color: var(--ews-gold); }
+
+.ews-hero-lead {
+    font-size: 1rem;
+    color: var(--ews-muted);
+    line-height: 1.65;
+    max-width: 620px;
+    margin: 0 auto 1.75rem;
+}
+
+.ews-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.ews-btn-primary {
+    display: inline-block;
+    background: var(--ews-gold);
+    color: var(--ews-black, #000);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 0.85rem 1.5rem;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.ews-btn-primary:hover { background: var(--ews-gold-light); }
+
+.ews-btn-outline {
+    display: inline-block;
+    border: 1px solid var(--ews-border);
+    color: var(--ews-text);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 0.85rem 1.5rem;
+    border-radius: 8px;
+    transition: border-color 0.2s, color 0.2s;
+}
+
+.ews-btn-outline:hover {
+    border-color: var(--ews-gold);
+    color: var(--ews-gold);
+}
+
+/* Compact team photo strip below hero copy */
+.ews-hero-photo {
+    max-width: 520px;
+    margin: 0 auto;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--ews-border);
+}
+
+.ews-hero-photo img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    object-position: center 30%;
+    display: block;
+}
+
+.ews-hero-photo figcaption {
+    padding: 0.65rem 1rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--ews-muted);
+    background: var(--ews-surface);
+    text-align: center;
+}
+
+/* --- Content sections --- */
+.ews-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3.5rem 1.5rem;
+}
+
+.ews-section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-align: center;
+    color: var(--ews-text);
+    margin-bottom: 2rem;
+}
+
+.ews-benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.25rem;
+}
+
+.ews-benefit-card {
+    background: var(--ews-surface);
+    border: 1px solid var(--ews-border);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.ews-benefit-card h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--ews-gold);
+    margin-bottom: 0.5rem;
+}
+
+.ews-benefit-card p {
+    font-size: 0.9rem;
+    color: var(--ews-muted);
+    line-height: 1.65;
+}
+
+.ews-cta-band {
+    background: var(--ews-surface);
+    border-top: 1px solid var(--ews-border);
+    text-align: center;
+    padding: 3rem 1.5rem;
+}
+
+.ews-cta-band h2 {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--ews-text);
+    margin-bottom: 0.75rem;
+}
+
+.ews-cta-band p {
+    color: var(--ews-muted);
+    margin-bottom: 1.5rem;
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* --- Feature images --- */
+.ews-feature-image {
+    width: 100%;
+    border-radius: 12px;
+    border: 1px solid var(--ews-border);
+    display: block;
+    object-fit: cover;
+}
+
+.ews-feature-image.hero-style {
+    max-height: 360px;
+    object-position: center;
+}
+
+.ews-security-visual {
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--ews-border);
+    background: var(--ews-black, #000);
+    margin: 1rem 0 2rem;
+}
+
+.ews-security-visual img {
+    width: 100%;
+    height: auto;
+    min-height: 260px;
+    max-height: 340px;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+}
+
+.ews-split-section {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    align-items: center;
+    margin-bottom: 3rem;
+}
+
+@media (min-width: 768px) {
+    .ews-split-section { grid-template-columns: 1fr 1fr; }
+}
+
+.ews-split-section img {
+    width: 100%;
+    max-height: 320px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid var(--ews-border);
+}
+
+/* --- Page layout --- */
+.ews-page-main {
+    flex: 1;
+    max-width: 960px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 3rem 1.5rem;
+}
+
+.ews-page-main.services-page {
+    max-width: 1120px;
+    padding: 0 0 3rem;
+}
+
+.services-shell {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+.ews-legal-page .content-section ul {
+    color: var(--text-secondary);
+    padding-left: 1.5rem;
+    max-width: 760px;
+}
+
+.ews-legal-page .content-section li { margin-bottom: 0.5rem; }

@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Services — Elite Web Services</title>
-    <link rel="icon" href="../assets/logo/favicon.ico">
+    <link rel="icon" href="../assets/logo/ews-logo-primary.png">
+    <link rel="stylesheet" href="../styles/ews-site.css">
     <link rel="stylesheet" href="../styles/brand-colors.css">
     <link rel="stylesheet" href="../styles/main.css">
     <style>
@@ -21,7 +22,7 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(219,172,24,0.08) 0%, transparent 70%);
+            background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(255,145,0,0.08) 0%, transparent 70%);
             pointer-events: none;
         }
         .hero-eyebrow {
@@ -150,9 +151,10 @@
         /* Services Grid */
         .services-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1.5rem;
             margin-bottom: 5rem;
+            max-width: 100%;
         }
         .service-card {
             background: var(--ews-gray-900);
@@ -386,8 +388,8 @@
 
         /* CTA Banner */
         .cta-banner {
-            background: linear-gradient(135deg, rgba(219,172,24,0.12), rgba(219,172,24,0.04));
-            border: 1px solid rgba(219,172,24,0.25);
+            background: linear-gradient(135deg, rgba(255,145,0,0.12), rgba(255,145,0,0.04));
+            border: 1px solid rgba(255,145,0,0.25);
             border-radius: 16px;
             padding: 3.5rem 3rem;
             text-align: center;
@@ -479,22 +481,11 @@
 </head>
 <body>
 
-    <header>
-        <nav>
-            <div class="logo">
-                <img src="../assets/logo/ews-logo-64.png" alt="EWS" height="32" style="vertical-align:middle; margin-right:0.5rem;">
-                EWS Portal
-            </div>
-            <ul>
-                <li><a href="../index.html">Dashboard</a></li>
-                <li><a href="services.html" class="active">Services</a></li>
-                <li><a href="assessment.html">AWS Assessment</a></li>
-                <li><a href="security.html">Security & Trust</a></li>
-            </ul>
-        </nav>
-    </header>
+    <header></header>
 
-    <main>
+    <main class="ews-page-main services-page">
+
+    <div class="services-shell">
 
         <!-- ── Hero ── -->
         <section class="services-hero">
@@ -789,12 +780,12 @@
             </div>
         </div>
 
+    </div>
+
     </main>
 
-    <footer>
-        <p>&copy; 2026 Elite Web Services. All rights reserved. &nbsp;·&nbsp; <a href="security.html">Security & Trust Protocols</a></p>
-    </footer>
+    <footer></footer>
 
-    <script src="../js/app.js"></script>
+    <script src="../js/ews-nav.js"></script>
 </body>
 </html>
