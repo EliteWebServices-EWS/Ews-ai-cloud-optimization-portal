@@ -9,27 +9,27 @@ const ENABLE_SYNC  = process.env.ENABLE_AWS_SYNC === "true";
 const USER_POOL_ID = process.env.USER_POOL_ID;
 const cognito      = new CognitoIdentityProviderClient({});
 
-// ── CORS headers returned with every response ────────────────────────────
 const cors = {
   "Access-Control-Allow-Origin":  process.env.CORS_ORIGIN || "*",
   "Access-Control-Allow-Headers": "Content-Type,Authorization",
   "Access-Control-Allow-Methods": "GET,POST,OPTIONS"
 };
 
-// ── Helper: build a consistent HTTP response ─────────────────────────────
 function respond(statusCode, body) {
   return { statusCode, headers: cors, body: JSON.stringify(body) };
 }
 
-// ── Helper: extract the logged-in user's email from JWT claims ───────────
+// HTTP API puts claims under requestContext.authorizer.jwt.claims
+// REST API puts claims under requestContext.authorizer.claims
+// Supporting both so local testing still works
 function getUserEmail(event) {
-  return event?.requestContext?.authorizer?.claims?.email || null;
+  return event?.requestContext?.authorizer?.jwt?.claims?.email
+      || event?.requestContext?.authorizer?.claims?.email
+      || null;
 }
 
-// ── Helper: check if this user is allowed to see a specific clientId ─────
 async function isAllowed(userEmail, clientId) {
   if (!userEmail) return false;
-  // EWS staff email domain = access to all clients
   if (userEmail.endsWith("@elitewebservicesllc.com")) return true;
   try {
     const user = await cognito.send(new AdminGetUserCommand({
@@ -48,10 +48,9 @@ async function isAllowed(userEmail, clientId) {
   }
 }
 
-// ── MAIN LAMBDA HANDLER ──────────────────────────────────────────────────
 exports.handler = async (event) => {
 
-  // ── EventBridge scheduled sync (no HTTP auth needed) ──────────────────
+  // EventBridge scheduled sync
   if (event.source === "eventbridge" && event.action === "syncAll") {
     const tenants = await listTenants();
     const results = [];
@@ -73,18 +72,23 @@ exports.handler = async (event) => {
     return { statusCode: 200, body: JSON.stringify(results) };
   }
 
-  const method    = event.httpMethod;
-  const path      = event.path;
-  const userEmail = getUserEmail(event);
+  // HTTP API uses requestContext.http.method and requestContext.http.path
+  // REST API uses event.httpMethod and event.path
+  // Supporting both so code works in all environments
+  const method = event.requestContext?.http?.method
+              || event.httpMethod
+              || "";
+  const path   = event.requestContext?.http?.path
+              || event.path
+              || "";
 
-  // ── CORS preflight ─────────────────────────────────────────────────────
   if (method === "OPTIONS") {
     return { statusCode: 200, headers: cors, body: "" };
   }
 
-  // ── GET /v1/health ─────────────────────────────────────────────────────
-  // Public endpoint — no auth required
-  // Use this to confirm the API is up and running
+  const userEmail = getUserEmail(event);
+
+  // GET /v1/health — public, no auth
   if (method === "GET" && path === "/v1/health") {
     return respond(200, {
       status:    "ok",
@@ -93,18 +97,13 @@ exports.handler = async (event) => {
     });
   }
 
-  // ── GET /v1/clients ────────────────────────────────────────────────────
-  // Returns the list of all clients this user is allowed to see
+  // GET /v1/clients
   if (method === "GET" && path === "/v1/clients") {
-    if (!ENABLE_SYNC) {
-      return respond(200, mockClients);
-    }
+    if (!ENABLE_SYNC) return respond(200, mockClients);
     const tenants = await listTenants();
-    // EWS staff sees every client
     if (userEmail?.endsWith("@elitewebservicesllc.com")) {
       return respond(200, tenants);
     }
-    // Regular users only see their allowed clients
     const filtered = [];
     for (const t of tenants) {
       if (await isAllowed(userEmail, t.id)) filtered.push(t);
@@ -112,17 +111,14 @@ exports.handler = async (event) => {
     return respond(200, filtered);
   }
 
-  // ── GET /v1/dashboard/:id ──────────────────────────────────────────────
-  // Returns a single client's dashboard — cached or mock
+  // GET /v1/dashboard/{clientId}
   const dashMatch = path.match(/^\/v1\/dashboard\/(.+)$/);
   if (method === "GET" && dashMatch) {
     const clientId = dashMatch[1];
     if (ENABLE_SYNC && !(await isAllowed(userEmail, clientId))) {
       return respond(403, { error: "Access denied to this client" });
     }
-    if (!ENABLE_SYNC) {
-      return respond(200, mockDashboard(clientId, clientId));
-    }
+    if (!ENABLE_SYNC) return respond(200, mockDashboard(clientId, clientId));
     const tenant = await getTenant(clientId);
     if (!tenant) return respond(404, { error: "Client not found" });
     const dash = tenant.dashboardSnapshot
@@ -130,17 +126,14 @@ exports.handler = async (event) => {
     return respond(200, dash);
   }
 
-  // ── POST /v1/clients/:id/sync ──────────────────────────────────────────
-  // Triggers a live pull from the client's AWS account
+  // POST /v1/clients/{clientId}/sync
   const syncMatch = path.match(/^\/v1\/clients\/(.+)\/sync$/);
   if (method === "POST" && syncMatch) {
     const clientId = syncMatch[1];
     if (ENABLE_SYNC && !(await isAllowed(userEmail, clientId))) {
       return respond(403, { error: "Access denied to this client" });
     }
-    if (!ENABLE_SYNC) {
-      return respond(200, mockDashboard(clientId, clientId));
-    }
+    if (!ENABLE_SYNC) return respond(200, mockDashboard(clientId, clientId));
     const tenant = await getTenant(clientId);
     if (!tenant) return respond(404, { error: "Client not found" });
     const dash = await syncFromAws(tenant);
@@ -148,18 +141,14 @@ exports.handler = async (event) => {
     return respond(200, dash);
   }
 
-  // ── GET /v1/auth/me ────────────────────────────────────────────────────
-  // Returns the currently logged-in user's email and allowed clients
+  // GET /v1/auth/me
   if (method === "GET" && path === "/v1/auth/me") {
-    if (!userEmail) {
-      return respond(401, { error: "Not authenticated" });
-    }
+    if (!userEmail) return respond(401, { error: "Not authenticated" });
     return respond(200, {
       email:   userEmail,
       isStaff: userEmail.endsWith("@elitewebservicesllc.com")
     });
   }
 
-  // ── 404 fallback ───────────────────────────────────────────────────────
   return respond(404, { error: "Route not found" });
 };
