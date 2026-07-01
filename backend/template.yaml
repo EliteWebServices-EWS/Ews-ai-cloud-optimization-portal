@@ -83,7 +83,6 @@ Resources:
       IdTokenValidity: 8
       RefreshTokenValidity: 30
 
-  # HTTP API — 71% cheaper than REST API ($1.00 vs $3.50 per million requests)
   EWSPortalApi:
     Type: AWS::Serverless::HttpApi
     Properties:
