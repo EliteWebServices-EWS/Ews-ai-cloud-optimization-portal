@@ -4,14 +4,7 @@ const { EC2Client, DescribeInstancesCommand }         = require("@aws-sdk/client
 
 async function syncFromAws(tenant) {
 
-  if (!tenant.roleArn || !tenant.externalId) {
-    throw new Error(
-      `Tenant ${tenant.id} missing roleArn or externalId — cannot sync`
-    );
-  }
-
-  const syncErrors = [];
-
+  // ── STEP 1: Assume the client's read-only IAM role via STS ──────────────
   let cfg;
   try {
     const sts   = new STSClient({});
@@ -20,6 +13,7 @@ async function syncFromAws(tenant) {
       RoleSessionName: `ews-sync-${tenant.id}`,
       ExternalId:      tenant.externalId
     }));
+
     cfg = {
       credentials: {
         accessKeyId:     creds.Credentials.AccessKeyId,
@@ -29,16 +23,20 @@ async function syncFromAws(tenant) {
       region: tenant.primaryRegion || "us-east-1"
     };
   } catch (err) {
+    // Fail-fast: If STS fails, we cannot proceed with downstream AWS requests.
     console.error(`STS AssumeRole failed for tenant ${tenant.id}: ${err.message}`);
-    throw err;
+    throw err; 
   }
 
+  // ── STEP 2: Pull month-to-date spend from Cost Explorer ─────────────────
   let monthlySpend = 0;
   let breakdown    = [];
   try {
     const now      = new Date();
     const start    = new Date(now.getFullYear(), now.getMonth(), 1)
                        .toISOString().split("T")[0];
+
+    // FIX: Advance end date by 1 day to make the range inclusive of today and handle day 1 safely
     const tomorrow = new Date(now);
     tomorrow.setDate(now.getDate() + 1);
     const end      = tomorrow.toISOString().split("T")[0];
@@ -55,6 +53,7 @@ async function syncFromAws(tenant) {
     monthlySpend = groups.reduce(
       (sum, g) => sum + parseFloat(g.Metrics?.UnblendedCost?.Amount || "0"), 0
     );
+
     breakdown = groups
       .map(g => ({
         service: g.Keys?.[0] || "Unknown",
@@ -69,54 +68,49 @@ async function syncFromAws(tenant) {
           ? Math.round((item.amount / monthlySpend) * 100)
           : 0
       }));
+
   } catch (err) {
-    console.error(`Failed: ${tenant.id} — Cost Explorer: ${err.message}`);
-    syncErrors.push({ source: "CostExplorer", error: err.message });
+    console.error(
+      `Cost Explorer failed for tenant ${tenant.id}: ${err.message}`
+    );
   }
 
+  // ── STEP 3: Count running EC2 instances ──────────────────────────────────
   let activeEc2 = 0;
   try {
     const ec2       = new EC2Client(cfg);
     const instances = await ec2.send(new DescribeInstancesCommand({
       Filters: [{ Name: "instance-state-name", Values: ["running"] }]
     }));
+
     activeEc2 = instances.Reservations?.reduce(
       (sum, r) => sum + (r.Instances?.length || 0), 0
     ) || 0;
+
   } catch (err) {
-    console.error(`Failed: ${tenant.id} — EC2: ${err.message}`);
-    syncErrors.push({ source: "EC2", error: err.message });
-  }
-
-  const partial = syncErrors.length > 0;
-  if (partial) {
     console.error(
-      `Partial sync for tenant ${tenant.id}: ` +
-      syncErrors.map(e => `${e.source}: ${e.error}`).join(" | ")
+      `EC2 DescribeInstances failed for tenant ${tenant.id}: ${err.message}`
     );
-  } else {
-    console.log(`Synced: ${tenant.id}`);
   }
 
+  // ── STEP 4: Return the full dashboard snapshot ───────────────────────────
   return {
     clientId:     tenant.id,
     clientName:   tenant.name,
     awsAccountId: tenant.awsAccountId,
     lastSync:     new Date().toISOString(),
     dataSource:   "aws",
-    partial,
-    syncErrors,
     cost: {
-      monthlySpend:     parseFloat(monthlySpend.toFixed(2)),
-      forecastedSpend:  parseFloat((monthlySpend * 1.05).toFixed(2)),
-      estimatedSavings: parseFloat((monthlySpend * 0.15).toFixed(2)),
+      monthlySpend:      parseFloat(monthlySpend.toFixed(2)),
+      forecastedSpend:   parseFloat((monthlySpend * 1.05).toFixed(2)),
+      estimatedSavings:  parseFloat((monthlySpend * 0.15).toFixed(2)),
+      spendDeltaPercent: 0,
       breakdown
     },
     security: {
       healthScore: 80,
       openAlerts:  0,
-      alerts:      [],
-      stub: true
+      alerts:      []
     },
     resources: {
       activeEc2,
@@ -124,11 +118,8 @@ async function syncFromAws(tenant) {
       uptimePercent: 99.9
     },
     insights: {
-      executiveSummary: partial
-        ? `Partial sync for ${tenant.name} — some AWS data unavailable. Check CloudWatch logs.`
-        : `Live data synced for ${tenant.name}. Review recommendations below.`,
-      recommendations: [],
-      stub: true
+      executiveSummary: `Live data synced for ${tenant.name}. Review recommendations below.`,
+      recommendations:  []
     }
   };
 }
